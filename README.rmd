@@ -1,0 +1,29 @@
+# ShadeR
+
+ShadeR provide a new geom for ggplot2, geom_fleck, and an associated stat, aspect_shading, to make dot density plots.
+
+
+### Examples
+
+```{r  echo = F}
+library(ggplot2)
+library(ShadeR)
+```
+
+```{r geom_fleck, echo = T, warning= FALSE, message=FALSE}
+ggplot(volcano2, aes(x, y, z = z)) + geom_fleck()+ coord_fixed() + theme_void() + ggtitle("Volcano shaded with geom_fleck")
+
+ggplot(volcano2, aes(x, y, z = z)) + geom_fleck(stat = "identity", density = 10)+ coord_fixed() + theme_void() + ggtitle("Volcano altitude visualised with geom_fleck and stat = \"identity\"." )
+
+ggplot(volcano2, aes(x, y, z = z)) + geom_fleck(aes(colour = (x+y)^2))+ coord_fixed() + theme_void() + ggtitle("Color and density are also controlled with aes()." )
+
+```
+## Author
+
+* **Clement Viguier** 
+
+## Acknowledgments
+
+* **Elio Campitelli** for the [shading code](https://eliocamp.github.io/codigo-r/2018/02/how-to-make-shaded-relief-in-r/?utm_content=buffer628d9&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer).
+* **James Cheshire** and **Oliver Uberti** for the inspiration.
+* **Hadley Whickham** for ggplot2.

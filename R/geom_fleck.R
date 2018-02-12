@@ -1,5 +1,9 @@
 #' Fleck
 #'
+#' Fleck is an extension of ggplot designed to plot geographic data. This is inspired by the designs of James Cheshire and Oliver Uberti.
+#' The geom_fleck draws multiple points randomly distributed on a grid defined by the aes x and y with a maximum density defined by the aesthetic density.
+#' It can be used with stat = aspect_shading (option by default) or stat = identity that do not compute the shading value from the height z.
+#'
 #' @import ggplot2 grid
 #' @eval rd_aesthetics("geom", "fleck")
 #' @inheritParams layer
@@ -14,6 +18,8 @@
 #' @examples
 #'
 #' ggplot(volcano2, aes(x, y, z = z)) + geom_fleck()+ coord_fixed() + theme_void()
+#'
+#'
 geom_fleck <- function(mapping = NULL, data = NULL,
                        stat = "aspect_shading", position = "identity",
                        res = 1,
@@ -62,7 +68,7 @@ GeomFleck <- ggproto("GeomFleck", Geom,
                        # (requires nb of new points per group, computed from density and z)
                        data$id <- 1:dim(data)[1]
                        # print(head(data))
-                       print(summary(data))
+                       # print(summary(data))
                        # print(density)
                        data2 <- generate.points(data[,c("x", "y", "z", "id", "density")]) # need to add res parameter
                        # print(data2)
