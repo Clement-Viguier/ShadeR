@@ -12,6 +12,8 @@
 #' @inheritParams layer
 #' @export
 #' @examples
+#'
+#' ggplot(volcano2, aes(x, y, z = z)) + geom_fleck()+ coord_fixed() + theme_void()
 geom_fleck <- function(mapping = NULL, data = NULL,
                        stat = "aspect_shading", position = "identity",
                        res = 1,
@@ -52,6 +54,10 @@ GeomFleck <- ggproto("GeomFleck", Geom,
                      draw_panel = function(data, panel_params, coord, na.rm = FALSE) {
                        # Checks on density and resolution
 
+                       # scale z
+                       if (any(data$z > 1 | data$z < 0)){
+                         data$z <- (data$z - min(data$z))/(max(data$z) - min(data$z))
+                       }
                        # Need to create new points at this step:
                        # (requires nb of new points per group, computed from density and z)
                        data$id <- 1:dim(data)[1]
@@ -61,7 +67,7 @@ GeomFleck <- ggproto("GeomFleck", Geom,
                        data2 <- generate.points(data[,c("x", "y", "z", "id", "density")]) # need to add res parameter
                        # print(data2)
 
-                       print(summary(data2))
+                       # print(summary(data2))
                        data <- merge(data[,setdiff(colnames(data), c("x", "y"))], data2)
 
                        coords <- coord$transform(data, panel_params)
