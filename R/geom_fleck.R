@@ -54,11 +54,15 @@ GeomFleck <- ggproto("GeomFleck", Geom,
                        shape = 19, colour = "grey60", size = 0.1,
                        density = 20,
                        fill = NA,
-                       alpha = NA, stroke = 1
+                       alpha = NA, stroke = 0.1
                      ),
 
-                     draw_panel = function(data, panel_params, coord, na.rm = FALSE) {
+                     draw_panel = function(data, panel_params, coord, res = 1, na.rm = FALSE) {
                        # Checks on density and resolution
+                       # adjust resolution:
+                       if (is.null(res)){
+                         res <- median(diff(data$x))
+                       }
 
                        # scale z
                        if (any(data$z > 1 | data$z < 0)){
@@ -70,8 +74,9 @@ GeomFleck <- ggproto("GeomFleck", Geom,
                        # print(head(data))
                        # print(summary(data))
                        # print(density)
-                       data2 <- generate.points(data[,c("x", "y", "z", "id", "density")]) # need to add res parameter
+                       data2 <- generate.points(data[,c("x", "y", "z", "id", "density")], res = res) # need to add res parameter
                        # print(data2)
+
 
                        # print(summary(data2))
                        data <- merge(data[,setdiff(colnames(data), c("x", "y"))], data2)
