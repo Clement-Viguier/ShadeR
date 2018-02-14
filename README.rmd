@@ -22,10 +22,11 @@ devtools::install_github("Clement-Viguier/ShadeR")
 
 An example of The Andes relief and Pacific Ocean ploted with *geom_fleck* and *stat_aspect_shading*:
 ![The Andes](./plot/aconcagua.png)
-
 Like any geom_similar to point, *geom_fleck* accepts changes of aes like colour, used here to identify the ocean from the land.
 
-Another aesthetic is * sun.angle * that modify the position of the sun for the shading computation by stat functions (only stat_aspect_shading for now). Here it is used with image_animate:
+THe resolution can be given as an aesthetic or is computed if `res = NULL` in the geom_fleck call.
+
+Another aesthetic is * sun.angle * that modify the position of the sun for the shading computation by stat functions (only stat_aspect_shading for now). Below it is used with image_animate:
 ![Volcano rotating shade](./plot/animation2.gif)
 
 
