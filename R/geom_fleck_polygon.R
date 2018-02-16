@@ -84,14 +84,19 @@ generate.points.poly <- function(data){
   # print(data)
   triangles <- triangulate(data$x, data$y)
 
-  points <- apply(triangles, 2, function(tri, data){
+  triangles.areas <- apply(triangles, 2, function(tri, data){
+    triangle.area(data[tri[1], c("x", "y")], data[tri[2], c("x", "y")], data[tri[3], c("x", "y")])
+  }, data)
+
+  triangles <- rbind(triangles, triangles.areas)
+  points <- apply(triangles, 2, function(tri, data, total.area){
     # extract points A, B and C:
     # print(tri)
     a <- data[tri[1], c("x", "y")]
     b <- data[tri[2], c("x", "y")]
     c <- data[tri[3], c("x", "y")]
 
-    n <- data[1, "density" ] * data[1, "z" ]
+    n <- data[1, "density" ] * data[1, "z" ] * tri[4]/total.area
 
     p <- replicate(n, runif.triangle(a,b,c), simplify = F )
     p <- do.call(rbind, p)
@@ -102,7 +107,7 @@ generate.points.poly <- function(data){
     p$id <- data[tri[1], "id"]
     # print(p)
     return(p)
-  }, data)
+  }, data, total.area = sum(triangles.areas))
 
   # print(points)
   points[sapply(points, function(m){
@@ -113,7 +118,7 @@ generate.points.poly <- function(data){
   colnames(fleck) <- c("x", "y", "id")
   rownames(fleck) <- 1: dim(fleck)[1]
   fleck <- as.data.frame(fleck)
-  print(fleck)
+  # print(fleck)
   return(fleck)
 }
 
@@ -126,6 +131,10 @@ runif.triangle <- function(a, b, c){
   return(p)
 }
 
+triangle.area <- function(a, b, c){
+  area <- abs(a$x * (b$y - c$y) + b$x * (c$y - a$y) + c$x * (a$y - b$y) )/2
+  return(area)
+}
 
 generate.points.poly2 <- function(data){
   triangles <- triangulate(data$x, data$y)
