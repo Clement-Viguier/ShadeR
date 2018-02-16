@@ -63,6 +63,7 @@ GeomFleck <- ggproto("GeomFleck", Geom,
                        if (is.null(res)){
                          res <- median(diff(data$x))
                        }
+                       # print("in geom!")
 
                        # scale z
                        if (any(data$z > 1 | data$z < 0)){
@@ -74,6 +75,7 @@ GeomFleck <- ggproto("GeomFleck", Geom,
                        # print(head(data))
                        # print(summary(data))
                        # print(density)
+                       # print("before generate!")
                        data2 <- generate.points(data[,c("x", "y", "z", "id", "density")], res = res) # need to add res parameter
                        # print(data2)
 
@@ -116,6 +118,7 @@ generate.points <- function(data,  res = 1){
     if (is.na(n)){
       n <- 0
     }
+    # print(n)
     pts <- replicate(2, expr = runif(n, -0.5 * res, 0.5 * res))
     # print(pts)
     # pts <- matrix(pts, ncol = 2)

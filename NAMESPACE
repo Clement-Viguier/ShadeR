@@ -2,7 +2,10 @@
 
 export(GeomFleck)
 export(StatAspectShading)
+export(StatSlopeShading)
 export(geom_fleck)
+export(geom_fleck_polygon)
 export(stat_aspect_shading)
+export(stat_slope_shading)
 import(ggplot2)
 import(grid)

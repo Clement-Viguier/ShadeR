@@ -13,6 +13,7 @@
 stat_aspect_shading <- function(mapping = NULL, data = NULL,
                           geom = "point", position = "identity",
                           sun.angle = 1/3*pi,
+                          slope= F,
                           res = 1,
                           ...,
                           show.legend = NA,
@@ -27,6 +28,7 @@ stat_aspect_shading <- function(mapping = NULL, data = NULL,
     inherit.aes = inherit.aes,
     params = list(
       res = res,
+      slope = slope,
       na.rm = FALSE,
       sun.angle = sun.angle,
       ...
@@ -39,7 +41,7 @@ stat_aspect_shading <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 StatAspectShading <- ggproto("StatAspectShading", Stat,
-                        compute_group = function(data, scales, params, sun.angle = pi/3, res = 1) {
+                        compute_group = function(data, scales, sun.angle = pi/3, slope = F, params,  res = 1) {
 
                           # print(res)
                           # # adjust resolution:
@@ -52,15 +54,22 @@ StatAspectShading <- ggproto("StatAspectShading", Stat,
                           # print(res)
                           # res = 1
 
+                          # print(data)
                           # compute angle:
                           data[, c("dx", "dy")] <- metR::Derivate(data$z ~ data$x + data$y)[c(1,3)]
-                          # print(data)
+                          # print(summary(data))
                           data$angle <- atan2(-data$dy, -data$dx)
+                          # print(summary(data))
                           # turn z into shade
-                          data$z <- (cos(data$angle + data$sun.angle)+1)/2
+                          data$z <- (cos(data$angle + sun.angle)+1)/2
+
+                          if (slope ){
+                            data$z <- data$z * (abs(data$dx) + abs(data$dy) )
+                          }
+                          # print(summary(data))
                           # print(data)
 
                           return(data)
                         },
-                        required_aes = c("x", "y", "z", "sun.angle")
+                        required_aes = c("x", "y", "z")
 )

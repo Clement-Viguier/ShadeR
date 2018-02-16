@@ -18,5 +18,13 @@ to the paired geom/stat.}
 a warning. If `TRUE`, missing values are silently removed.}
 }
 \description{
-Fleck
+Fleck is an extension of ggplot designed to plot geographic data. This is inspired by the designs of James Cheshire and Oliver Uberti.
+The geom_fleck draws multiple points randomly distributed on a grid defined by the aes x and y with a maximum density defined by the aesthetic density.
+It can be used with stat = aspect_shading (option by default) or stat = identity that do not compute the shading value from the height z.
+}
+\examples{
+
+ggplot(volcano2, aes(x, y, z = z)) + geom_fleck()+ coord_fixed() + theme_void()
+
+
 }
