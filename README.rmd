@@ -44,6 +44,10 @@ ggplot(volcano2, aes(x, y, z = z)) + geom_fleck(stat = "identity", density = 10)
 
 ggplot(volcano2, aes(x, y, z = z)) + geom_fleck(aes(colour = (x+y)^2))+ coord_fixed() + theme_void() + ggtitle("Color and density are also controlled with aes()." )
 
+
+# Alternative stat functions provide alternate shading function from the rayshader package
+ ggplot(volcano2, aes(x, y, z = z)) + geom_fleck(stat = "ray_shading")+ coord_fixed() + theme_void()
+ ggplot(volcano2, aes(x, y, z = z)) + geom_fleck(stat = "sphere_shading")+ coord_fixed() + theme_void()
 ```
 ## Author
 
@@ -53,4 +57,5 @@ ggplot(volcano2, aes(x, y, z = z)) + geom_fleck(aes(colour = (x+y)^2))+ coord_fi
 
 * **Elio Campitelli** for the [shading code](https://eliocamp.github.io/codigo-r/2018/02/how-to-make-shaded-relief-in-r/?utm_content=buffer628d9&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer).
 * **James Cheshire** and **Oliver Uberti** for the inspiration.
+* ** Tyler Morgan-Wall ** for the shading computation from his [rayshader package](https://github.com/tylermorganwall/rayshader)
 * **Hadley Whickham** for ggplot2.

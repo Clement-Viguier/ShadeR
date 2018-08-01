@@ -21,17 +21,17 @@
 #'
 #'
 #'
-geom_fleck_polygon <- function(mapping = NULL, data = NULL, stat = "identity",
+geom_fleck_spatial <- function(mapping = NULL, data = NULL, stat = "identity",
                                position = "identity", na.rm = FALSE, show.legend = NA,
                                inherit.aes = TRUE, ...) {
   layer(
-    geom = GeomFleckPolygon, mapping = mapping, data = data, stat = stat,
+    geom = GeomFleckSpatial, mapping = mapping, data = data, stat = stat,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(na.rm = na.rm, ...)
   )
 }
 
-GeomFleckPolygon <- ggproto("GeomFleckPolygon", Geom,
+GeomFleckSpatial <- ggproto("GeomFleckSpatial", Geom,
                             required_aes = c("x", "y", "z"),
                             non_missing_aes = c("size", "shape", "colour", "density"),
                             default_aes = aes(
@@ -48,12 +48,23 @@ GeomFleckPolygon <- ggproto("GeomFleckPolygon", Geom,
                               if (n <= 2) return(grid::nullGrob())
 
                               # if (any(data$z > 1 | data$z < 0)){
-                                # data$z <- (data$z - min(data$z))/(max(data$z) - min(data$z))
+                              # data$z <- (data$z - min(data$z))/(max(data$z) - min(data$z))
                               # }
 
-                              data$id <- 1:dim(data)[1]
+                              print(data)
 
-                              data2 <- generate.points.poly(data[,c("x", "y", "z", "id", "density")]) # need to add res parameter
+                              poly1 <- list(Polygon(data[,c("x", "y")]))
+                              print(typeof(poly1))
+                              print(class(poly1))
+                              print(poly1)
+                              poly <- Polygons(poly1, ID = data$group[1])
+                              print(typeof(poly))
+                              print(class(poly))
+
+                              data.spatial <- SpatialPolygons(poly)
+
+                              data2 <- dotsInPolys(data.spatial, mean(data$z) * mean(data$density), f="random")[[1]]
+                              colnames(data2) <- c("x","y")
 
                               data <- as.data.frame(merge(data[1,setdiff(colnames(data), c("x", "y"))], data2))
 
@@ -61,7 +72,7 @@ GeomFleckPolygon <- ggproto("GeomFleckPolygon", Geom,
 
                               # coords <- data
 
-                              # print(coords)
+                              print(coords)
 
                               pointsGrob(
                                 coords$x, coords$y,
@@ -78,83 +89,4 @@ GeomFleckPolygon <- ggproto("GeomFleckPolygon", Geom,
 
                             draw_key = draw_key_point
 )
-
-
-generate.points.poly <- function(data){
-  # print(data)
-  triangles <- triangulate(data$x, data$y)
-
-  triangles.areas <- apply(triangles, 2, function(tri, data){
-    triangle.area(data[tri[1], c("x", "y")], data[tri[2], c("x", "y")], data[tri[3], c("x", "y")])
-  }, data)
-
-  triangles <- rbind(triangles, triangles.areas)
-  points <- apply(triangles, 2, function(tri, data, total.area){
-    # extract points A, B and C:
-    # print(tri)
-    a <- data[tri[1], c("x", "y")]
-    b <- data[tri[2], c("x", "y")]
-    c <- data[tri[3], c("x", "y")]
-
-    n <- data[1, "density" ] * data[1, "z" ] * tri[4]/total.area
-
-    p <- replicate(n, runif.triangle(a,b,c), simplify = F )
-    p <- do.call(rbind, p)
-
-    # print(p)
-    # p <- as.data.frame(t(unlist(c(p, data[tri[1], "id"]))))
-    p <- as.data.frame(p)
-    p$id <- data[tri[1], "id"]
-    # print(p)
-    return(p)
-  }, data, total.area = sum(triangles.areas))
-
-  # print(points)
-  points[sapply(points, function(m){
-    # print(m)
-    length(dim(m)) > 0} )]
-
-  fleck <- (do.call(rbind, points))
-  colnames(fleck) <- c("x", "y", "id")
-  rownames(fleck) <- 1: dim(fleck)[1]
-  fleck <- as.data.frame(fleck)
-  # print(fleck)
-  return(fleck)
-}
-
-runif.triangle <- function(a, b, c){
-  # print(c(a,b,c))
-  r1 <- runif(1)
-  r2 <- runif(1)
-
-  p <- (1-sqrt(r1)) * a + (sqrt(r1) * (1 - r2)) * b + (r2 * sqrt(r1)) * c
-  return(p)
-}
-
-triangle.area <- function(a, b, c){
-  area <- abs(a$x * (b$y - c$y) + b$x * (c$y - a$y) + c$x * (a$y - b$y) )/2
-  return(area)
-}
-
-generate.points.poly2 <- function(data){
-  triangles <- triangulate(data$x, data$y)
-
-  points <- apply(triangles, 2, function(tri, data){
-    # extract points A, B and C:
-    a <- data[tri[1], c("x", "y")]
-    b <- data[tri[2], c("x", "y")]
-    c <- data[tri[3], c("x", "y")]
-    p <- c(mean(c(a$x, b$x, c$x)), mean(c(a$y, b$y, c$y)))
-    p <- as.data.frame(t(c(p, data[tri[1], "id"])))
-    return(p)
-  }, data)
-
-
-  fleck <- (do.call(rbind, points))
-  colnames(fleck) <- c("x", "y", "id")
-  rownames(fleck) <- 1: dim(fleck)[1]
-  fleck <- as.data.frame(fleck)
-  print(fleck)
-  return(fleck)
-}
 

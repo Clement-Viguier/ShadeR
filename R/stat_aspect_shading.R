@@ -39,6 +39,7 @@ stat_aspect_shading <- function(mapping = NULL, data = NULL,
 #' @rdname ggplot2-ggproto
 #' @format NULL
 #' @usage NULL
+#' @importFrom metR Derivate
 #' @export
 StatAspectShading <- ggproto("StatAspectShading", Stat,
                         compute_group = function(data, scales, sun.angle = pi/3, slope = F, params,  res = 1) {

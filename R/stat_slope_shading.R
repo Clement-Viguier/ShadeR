@@ -48,7 +48,7 @@ StatSlopeShading <- ggproto("StatSlopeShading", Stat,
                                data$angle <- atan(abs(data$dy) + abs(data$dx))
                                data$angle <- data$angle
                                data$z <- cos(sun.elevation - (data$angle+pi/2))
-                               print(summary(data))
+                               # print(summary(data))
 
                                return(data)
                              },
