@@ -5,8 +5,8 @@
 \title{Compute aspect shading per group for the given data}
 \usage{
 stat_aspect_shading(mapping = NULL, data = NULL, geom = "point",
-  position = "identity", sun.angle = 1/3 * pi, slope = F, res = 1, ...,
-  show.legend = NA, inherit.aes = TRUE)
+  position = "identity", sun.angle = 1/3 * pi, slope = F, res = 1,
+  ..., show.legend = NA, inherit.aes = TRUE)
 }
 \arguments{
 \item{...}{other arguments passed on to [layer()]. These are

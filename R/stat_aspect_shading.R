@@ -56,13 +56,20 @@ StatAspectShading <- ggproto("StatAspectShading", Stat,
                           # res = 1
 
                           # print(data)
+                          # print(typeof(data))
                           # compute angle:
-                          data[, c("dx", "dy")] <- metR::Derivate(data$z ~ data$x + data$y)[c(1,3)]
                           # print(summary(data))
-                          data$angle <- atan2(-data$dy, -data$dx)
+                          # print("before metR")
+                          data[, c("dx", "dy")] <- metR::Derivate(z ~ x + y, data)
+                          # print(summary(data))
+                          data$angle <- atan2(data$dy, data$dx)
                           # print(summary(data))
                           # turn z into shade
-                          data$z <- (cos(data$angle + sun.angle)+1)/2
+                          # data$z <- (cos(data$angle + sun.angle)+1)/2
+                          # data$z <- (cos(data$angle + sun.angle)+1)/2
+                          data$z <- (sin((data$angle + sun.angle))+1)
+                          # print(sun.angle)
+                          # print(summary(data))
 
                           if (slope ){
                             data$z <- data$z * (abs(data$dx) + abs(data$dy) )

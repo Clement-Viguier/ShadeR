@@ -46,25 +46,39 @@ stat_sphere_shading <- function(mapping = NULL, data = NULL,
 StatSphereShading <- ggproto("StatSphereShading", Stat,
                           compute_group = function(data, scales, sun.angle = pi/3, slope = F, params,  res = 1, zscale = 1) {
 
-                            deg <- ((pi/2 - sun.angle) * (180/pi)) %% 360
+                            # deg <- ((pi/2 - sun.angle) * (180/pi)) %% 360
+                            deg <- ((sun.angle) * (180/pi)) %% 360
 
+                            # browser()
 
-                            height <- dcast(data,x~-y, value.var = "z" )
-                            shade <- rotate(sphere_shade(as.matrix(height[,-1]), sunangle = deg, texture = "bw", zscale = zscale, remove_edges = F)[, ,1])
+                            # print(summary(data))
+                            height <- dcast(data,x~y, value.var = "z")
+                            # print(dim(height))
+                            # shade <- rotate(sphere_shade(as.matrix(height[,-1]), sunangle = deg, texture = "bw", zscale = zscale, remove_edges = F)[, ,1])
 
+                            shade2 <- antirotate(sphere_shade(flipv(as.matrix(height[,-1])), sunangle = deg, texture = "bw", zscale = zscale, remove_edges = F)[, ,1])
+                            rownames(shade2) <- height[,1]
+                            colnames(shade2) <- colnames(height)[-1]
+                            data2 <- melt((shade2))
 
                             # print(summary(melt(shade)))
-                            data <- melt(shade)
+                            # data <- melt(shade)
+                            # print(summary(data))
 
-                            x <- rep(1:dim(shade)[1], dim(shade)[2])
-                            shade <- cbind(x, data)
+                            # x <- rep(1:dim(shade)[1], dim(shade)[2])
+                            # shade <- cbind(x, data)
 
-                            colnames(data) <- c("x", "y", "z")
-                            data$y <- - as.numeric(data$y)
+                            colnames(data2) <- c("x", "y", "z")
+                            #data$y <- - as.numeric(data$y)
+                            # data2$y <- sign(data$y) * data2$y
 
-                            return(data)
+
+
+                            return(cbind(data2, data[,setdiff(colnames(data), colnames(data2))]))
                           },
                           required_aes = c("x", "y", "z")
 )
 
 rotate <- function(x) t(apply(x, 2, rev))
+antirotate <- function(x) apply(t(x),2,rev)
+flipv <- function(x) apply(x,2,rev)

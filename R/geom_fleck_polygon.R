@@ -3,6 +3,7 @@
 #' Fleck polygon is an extension of ggplot designed to plot geographic data. This is inspired by the designs of James Cheshire and Oliver Uberti.
 #'
 #' @import ggplot2 grid
+#' @importFrom rgl triangulate
 #' @eval rd_aesthetics("geom", "fleck", "polygon")
 #' @inheritParams layer
 #' @param na.rm If `FALSE`, the default, missing values are removed with
@@ -82,7 +83,7 @@ GeomFleckPolygon <- ggproto("GeomFleckPolygon", Geom,
 
 generate.points.poly <- function(data){
   # print(data)
-  triangles <- triangulate(data$x, data$y)
+  triangles <- rgl::triangulate(data$x, data$y)
 
   triangles.areas <- apply(triangles, 2, function(tri, data){
     triangle.area(data[tri[1], c("x", "y")], data[tri[2], c("x", "y")], data[tri[3], c("x", "y")])
@@ -137,7 +138,7 @@ triangle.area <- function(a, b, c){
 }
 
 generate.points.poly2 <- function(data){
-  triangles <- triangulate(data$x, data$y)
+  triangles <- rgl::triangulate(data$x, data$y)
 
   points <- apply(triangles, 2, function(tri, data){
     # extract points A, B and C:

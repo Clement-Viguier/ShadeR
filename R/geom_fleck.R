@@ -83,6 +83,7 @@ GeomFleck <- ggproto("GeomFleck", Geom,
                        # print(summary(data2))
                        data <- merge(data[,setdiff(colnames(data), c("x", "y"))], data2)
 
+
                        coords <- coord$transform(data, panel_params)
                        # print(head(coords))
                        # ggname("geom_fleck",

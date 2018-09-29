@@ -45,24 +45,18 @@ stat_ray_shading <- function(mapping = NULL, data = NULL,
 StatRayShading <- ggproto("StatRayShading", Stat,
                              compute_group = function(data, scales, sun.angle = pi/3, slope = F, params,  res = 1, zscale = 1) {
 
-                               deg <- ((pi/2 - sun.angle) * (180/pi)) %% 360
+                               deg <- ((sun.angle) * (180/pi)) %% 360
 
-                               height <- dcast(data,x~-y, value.var = "z" )
-                               shade <- ray_shade(as.matrix(height[,-1]), sunangle = deg, zscale = zscale, remove_edges = F)
+                               height <- dcast(data,x~y, value.var = "z" )
+                               shade2 <- rotate(rotate(ray_shade(flipv(as.matrix(height[,-1])), sunangle = deg, zscale = zscale, remove_edges = F)))
+                               rownames(shade2) <- height[,1]
+                               colnames(shade2) <- colnames(height)[-1]
+                               data2 <- melt((shade2))
 
-
-                               # print(summary(melt(shade)))
-                               data <- melt(shade)
-
-                               x <- rep(1:dim(shade)[1], dim(shade)[2])
-                               shade <- cbind(x, data)
-
-                               colnames(data) <- c("x", "y", "z")
-                               data$y <- - as.numeric(data$y)
-                               # print("melted")
-                               # print(summary(data))
-                               # print(dim(data))
-                               return(data)
+                               colnames(data2) <- c("x", "y", "z")
+                               #data$y <- - as.numeric(data$y)
+                               # data2$y <-  sign(data$y) * data2$y
+                               return(cbind(data2, data[,setdiff(colnames(data), colnames(data2))]))
                              },
                              required_aes = c("x", "y", "z")
 )

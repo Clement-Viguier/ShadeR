@@ -43,7 +43,7 @@ StatSlopeShading <- ggproto("StatSlopeShading", Stat,
 
 
                                # compute angle:
-                               data[, c("dx", "dy")] <- metR::Derivate(data$z ~ data$x + data$y)[c(1,3)]
+                               data[, c("dx", "dy")] <- metR::Derivate(z ~ x + y, data)
                                # print(data)
                                data$angle <- atan(abs(data$dy) + abs(data$dx))
                                data$angle <- data$angle

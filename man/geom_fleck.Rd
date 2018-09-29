@@ -5,8 +5,8 @@
 \title{Fleck}
 \usage{
 geom_fleck(mapping = NULL, data = NULL, stat = "aspect_shading",
-  position = "identity", res = 1, ..., na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE)
+  position = "identity", res = 1, ..., na.rm = FALSE,
+  show.legend = NA, inherit.aes = TRUE)
 }
 \arguments{
 \item{...}{other arguments passed on to [layer()]. These are

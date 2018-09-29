@@ -50,20 +50,22 @@ GeomFleckSpatial <- ggproto("GeomFleckSpatial", Geom,
                               # if (any(data$z > 1 | data$z < 0)){
                               # data$z <- (data$z - min(data$z))/(max(data$z) - min(data$z))
                               # }
+#
+#                               print(data)
+#
+#                               browser()
+#                               poly1 <- list(Polygon(data[,c("x", "y")]))
+#                               print(typeof(poly1))
+#                               print(class(poly1))
+#                               print(poly1)
+#                               poly <- Polygons(poly1, ID = data$group[1])
+#                               print(typeof(poly))
+#                               print(class(poly))
 
-                              print(data)
+                              data.spatial <- SpatialPolygons(list(Polygons(list(Polygon(SpatialPointsDataFrame(coords = data[,c("x", "y")], data = data))), ID = unique(data$group))))
 
-                              poly1 <- list(Polygon(data[,c("x", "y")]))
-                              print(typeof(poly1))
-                              print(class(poly1))
-                              print(poly1)
-                              poly <- Polygons(poly1, ID = data$group[1])
-                              print(typeof(poly))
-                              print(class(poly))
 
-                              data.spatial <- SpatialPolygons(poly)
-
-                              data2 <- dotsInPolys(data.spatial, mean(data$z) * mean(data$density), f="random")[[1]]
+                              data2 <- dotsInPolys(data.spatial, as.integer(mean(data$z) * mean(data$density)), f="random")@coords
                               colnames(data2) <- c("x","y")
 
                               data <- as.data.frame(merge(data[1,setdiff(colnames(data), c("x", "y"))], data2))
@@ -72,7 +74,7 @@ GeomFleckSpatial <- ggproto("GeomFleckSpatial", Geom,
 
                               # coords <- data
 
-                              print(coords)
+                              # print(coords)
 
                               pointsGrob(
                                 coords$x, coords$y,
