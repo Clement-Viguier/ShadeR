@@ -1,6 +1,12 @@
+---
+title: "ShadeR"
+author: "Clément Viguier"
+output: md_document
+---
+
 # ShadeR
 
-*ShadeR* provide a new geom for ggplot2, *geom_fleck*, and an associated stat, *aspect_shading*, to make dot density plots.
+*ShadeR* provide a new geom for ggplot2, *geom_fleck*, to make dot density plots and an associated stat, *aspect_shading*, to generate shadding effect.
 
 
 ## Installation
@@ -22,7 +28,7 @@ devtools::install_github("Clement-Viguier/ShadeR")
 
 An example of The Andes relief and Pacific Ocean ploted with *geom_fleck* and *stat_aspect_shading*:
 ![The Andes](./plot/aconcagua.png)
-Like any geom_similar to point, *geom_fleck* accepts changes of aes like colour, used here to identify the ocean from the land.
+Like any geom_similar to point, *geom_fleck* accepts changes of aes like colour, used here to distinguish the ocean from the land.
 
 THe resolution can be given as an aesthetic or is computed if `res = NULL` in the geom_fleck call.
 
@@ -37,7 +43,7 @@ library(ShadeR)
 
 Three one-line examples you can try once ShadeR is installed:
 
-```{r geom_fleck, echo = T, warning= FALSE, message=FALSE}
+```{r geom_fleck, eval=FALSE, echo = FALSE, warning= FALSE, message=FALSE}
 ggplot(volcano2, aes(x, y, z = z)) + geom_fleck()+ coord_fixed() + theme_void() + ggtitle("Volcano shaded with geom_fleck")
 
 ggplot(volcano2, aes(x, y, z = z)) + geom_fleck(stat = "identity", density = 10)+ coord_fixed() + theme_void() + ggtitle("Volcano altitude visualised with geom_fleck and stat = \"identity\"." )
